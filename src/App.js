@@ -1,16 +1,21 @@
 
 import './App.css';
 import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import Button from '@material-ui/core/button';
 import NpcDetails from './NpcDetails';
 import SkillCheck from './SkillCheck';
 import DrivingCheck from './DrivingCheck';
+import NamesApi from './NamesApi';
 import {v4 as uuidv4} from 'uuid';
+import Weather from './Weather';
 
 const LOCAL_STORAGE_KEY = 'topsecretApp.npcs'
 
 function App() {
   const [npcs , newNpc] = useState([])
   const createNpcRef = useRef();
+ 
 
   useEffect(() => {
     const storedNpcs = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
@@ -28,7 +33,8 @@ function App() {
     newNpc(copyNewNpcs)
   }
 
-  function createNpc (e) {
+  function createNpc (event) {
+    window.alert(event.currentTarget.getAttribute('difficulty'))
     const name = createNpcRef.current.value
     if (name ==='') return
     newNpc(prevNpc => {
@@ -46,13 +52,20 @@ function App() {
     <>
     <NpcDetails npcs = {npcs} toggleSelected = {toggleSelected}/>
     <input ref={createNpcRef} type = 'text'></input>
-    <button onClick={createNpc}>Add Easy NPC</button>
+    <button onClick={(event) => createNpc(event)} difficulty= '1' >Add Easy NPC</button>
     <button onClick={createNpc}>Add Medium NPC</button>
+    <button onClick={createNpc}>Add Difficult NPC</button>
     <button onClick={clearSelected}>Delete Selected Character</button>
+    <Button variant='contained' color ="primary">Get Names</Button>
+    <NamesApi />
     <SkillCheck />
     <DrivingCheck />
+    <Weather />
     </>
   );
 }
 
+ReactDOM.render(<App />, document.getElementById('root'));
+
 export default App;
+
